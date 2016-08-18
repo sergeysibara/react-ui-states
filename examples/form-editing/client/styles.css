@@ -1,0 +1,50 @@
+label{
+    width: 100%;
+    display: inline-block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    display: block;
+    border: 1px solid darkgrey;
+}
+
+button{
+    min-width: 150px;
+    margin-right: 20px;
+}
+
+.form-group{
+    width: 318px;
+    margin-bottom: 15px;
+}
+
+.help-block {
+    width: 100%;
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.form-group.has-error input {
+    border-color: #a94442;
+}
+
+.form-group.has-error label  {
+    color: #a94442;
+}
+
+.form-group.has-error .help-block {
+    color: #a94442;
+}
+
+table{
+    width: 400px;
+    border-collapse: collapse;
+    text-align: center;
+}
+th, td{
+    border: 1px solid gray;
+}

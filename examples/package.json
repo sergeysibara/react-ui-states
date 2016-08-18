@@ -1,0 +1,29 @@
+{
+  "name": "react-ui-states-examples",
+  "devDependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-core": "^6.13.2",
+    "babel-eslint": "^6.1.2",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-syntax-jsx": "^6.13.0",
+    "babel-preset-es2015": "^6.13.2",
+    "babel-preset-react": "^6.3.13",
+    "babel-preset-stage-2": "^6.13.0",
+    "jsx-control-statements": "^3.1.2",
+    "webpack": "^1.13.1"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "react": "^15.3.0",
+    "react-dom": "^15.3.0"
+  },
+  "scripts": {
+    "build:simple-list": "webpack --config simple-list/webpack.config.js",
+    "watch:simple-list": "webpack --config simple-list/webpack.config.js --watch",
+    "build:list-with-server": "webpack --config list-with-server/client/webpack.config.js",
+    "watch:list-with-server": "webpack --config list-with-server/client/webpack.config.js --watch",
+    "build:form-editing": "webpack --config form-editing/client/webpack.config.js",
+    "watch:form-editing": "webpack --config form-editing/client/webpack.config.js --watch"
+  }
+}
