@@ -11,7 +11,8 @@ var configPaths = {
     dist: path.join(__dirname, 'dist'),
     react: resolve(examplesPath + 'node_modules/react/dist/react-with-addons.js'),
     reactDom: resolve(examplesPath + 'node_modules/react-dom/dist/react-dom.js'),
-    uiStates: resolve(examplesPath + 'ui-states-build/react-ui-states.js')
+    uiStates: resolve(examplesPath + 'ui-states-build/react-ui-states.js'),
+    babelPolyfill: resolve(examplesPath + 'node_modules/babel-polyfill/dist/polyfill.js')
 };
 
 
@@ -23,6 +24,7 @@ module.exports = {
     entry: {
         index: './index.js',
         vendor: [
+            configPaths.babelPolyfill,
             configPaths.react,
             configPaths.reactDom,
             configPaths.uiStates
@@ -56,8 +58,9 @@ module.exports = {
             }
         ],
         noParse: [
+            configPaths.babelPolyfill,
             configPaths.react,
-            configPaths.uiStates,
+            configPaths.uiStates
         ]
     },
     plugins: [
