@@ -1,6 +1,6 @@
 {
   "name": "react-ui-states",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Library for creating an architecture with separate components and states in React.js applications",
   "repository": {
     "type": "git",
