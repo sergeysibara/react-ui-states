@@ -66,22 +66,16 @@ export default class DefaultUIState extends BaseUIState {
         this._updateComponent();
     }
 
-    cancelChangesByPath(pathInStore, store, doUpdate = true) {
-        let path = store.key + '.' + pathInStore;
-
-        if (objectPath.has(this, path)) {
-            let storeValue = this._getStoreDataByPath(store.key, pathInStore);
-            objectPath.set(this, path, storeValue);
-
-            let validationPathInStore = 'validationData.' + pathInStore;
-            let validationPath = store.key + '.' + validationPathInStore;
-            if (objectPath.has(this, validationPath)) {
-                storeValue = this._getStoreDataByPath(store.key, validationPathInStore);
-                objectPath.set(this, validationPath, storeValue);
-            }
+    cancelChangesByPath(path, store, doUpdate = true) {
+        let fullPath = store.key + '.' + path;
+        debugger;
+        if (objectPath.has(this, fullPath)) {
+            let storeValue = this._getStoreDataByPath(store.key, path);
+            objectPath.set(this, fullPath, storeValue);
+            this._removeValidationInField(store.key, path);
         }
         else {
-            console.log(`path ${path} not found`);
+            console.log(`path ${fullPath} not found`);
         }
 
         if (doUpdate === true) {
@@ -129,9 +123,6 @@ export default class DefaultUIState extends BaseUIState {
         let storeParam = this._getParamByStoreKey(storeKey);
         let storeObject = (storeParam.cloneStore === true) ? storeParam.store.getModelClone() : storeParam.store.getModel();
 
-/*        if (!Utils.Other.isExist(storeObject.validationData)) {
-            return storeParam.dataConvertFunc(storeObject);
-        }*/
         return storeObject;
     }
 
@@ -177,6 +168,7 @@ export default class DefaultUIState extends BaseUIState {
             return;
         }
         if (Utils.Other.isExist(validationData)) {
+            //add validationData if validationData object not exist
             if (!objectPath.has(this[storeKey].validationData, path)) {
                 this[storeKey].validationData = {};
             }
@@ -184,15 +176,7 @@ export default class DefaultUIState extends BaseUIState {
         }
         else {
             objectPath.set(this[storeKey], path, fieldValue);
-
-            //remove validation for field
-            if (Utils.Other.isExist(this[storeKey].validationData)) {
-                objectPath.set(this[storeKey].validationData, path, undefined);
-
-                if (Object.keys(this[storeKey].validationData).length === 0) {
-                    this[storeKey].validationData = undefined;
-                }
-            }
+            this._removeValidationInField(storeKey, path);
         }
         let fullPath = getFullPath(storeKey, path);
         this._updateField(fullPath);
@@ -216,5 +200,15 @@ export default class DefaultUIState extends BaseUIState {
                 this._updatingStore = null;
             }
         );
+    }
+
+    _removeValidationInField(storeKey, pathToField) {
+        if (Utils.Other.isExist(this[storeKey].validationData)) {
+            objectPath.set(this[storeKey].validationData, pathToField, undefined);
+
+            if (Object.keys(this[storeKey].validationData).length === 0) {
+                this[storeKey].validationData = undefined;
+            }
+        }
     }
 }

@@ -26,7 +26,7 @@ export default class CustomerForm extends Component {
     }
 
     handleCancelCity() {
-        mainStore.clearValidationInField('city');
+        this.uiState.cancelChangesByPath('city', mainStore);
     }
 
     handleSaveCity() {

@@ -4,7 +4,7 @@ import objectPath from 'object-path'
 export default class DefaultStore {
     constructor(key) {
         this._key = key;
-        this._model = {/*validationData: null,*/ _lastUpdateTime: Date.now(), _isNew: null, _isExist: false};
+        this._model = {_lastUpdateTime: Date.now(), _isNew: null, _isExist: false};
         this._subscribers = []; //subscriber signature = {id, action}
         this._subscribersOnFieldUpdate = []; //subscriber signature = {id, action}
     }
@@ -15,7 +15,6 @@ export default class DefaultStore {
 
     createNew(data = {}) {
         this._model = data;
-        //this._model.validationData = null;
         this._model._lastUpdateTime = Date.now();
         this._model._isNew = true;
         this._model._isExist = true;
@@ -24,7 +23,6 @@ export default class DefaultStore {
 
     replace(data = {}) {
         this._model = data;
-        //this._model.validationData = null;
         this._model._lastUpdateTime = Date.now();
         this._model._isNew = false;
         this._model._isExist = true;
@@ -32,7 +30,7 @@ export default class DefaultStore {
     }
 
     clear() {
-        this._model = {/*validationData: null,*/ _lastUpdateTime: Date.now(), _isNew: null, _isExist: false};
+        this._model = {_lastUpdateTime: Date.now(), _isNew: null, _isExist: false};
         this._publish();
     }
 
@@ -41,7 +39,6 @@ export default class DefaultStore {
             this._model._isNew = false;
             Object.assign(this._model, data); //merge with remaining fields
         }
-        //this._model.validationData = validationData;
         this._model._lastUpdateTime = Date.now();
         this._model._isExist = true;
         this._publish(validationData, options);
@@ -51,12 +48,6 @@ export default class DefaultStore {
         if (!Utils.Other.isExist(validationData)) {
             objectPath.set(this._model, path, data);
         }
-/*        else {
-            if (!Utils.Other.isExist(this._model.validationData)) {
-                this._model.validationData = {};
-            }
-            objectPath.set(this._model.validationData, path, validationData);
-        }*/
         this._model._lastUpdateTime = Date.now();
         this._publishByPath(path, data, validationData, options);
     }

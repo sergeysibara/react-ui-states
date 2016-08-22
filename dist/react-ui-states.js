@@ -1080,27 +1080,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }, {
 	        key: 'cancelChangesByPath',
-	        value: function cancelChangesByPath(pathInStore, store) {
+	        value: function cancelChangesByPath(path, store) {
 	            var doUpdate = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
 
-	            var path = store.key + '.' + pathInStore;
+	            var fullPath = store.key + '.' + path;
+	            debugger;
+	            if (_objectPath2.default.has(this, fullPath)) {
+	                var storeValue = this._getStoreDataByPath(store.key, path);
+	                _objectPath2.default.set(this, fullPath, storeValue);
 
-	            if (_objectPath2.default.has(this, path)) {
-	                var storeValue = this._getStoreDataByPath(store.key, pathInStore);
-	                _objectPath2.default.set(this, path, storeValue);
-
-	                var validationPathInStore = 'validationData.' + pathInStore;
-	                var validationPath = store.key + '.' + validationPathInStore;
-	                if (_objectPath2.default.has(this, validationPath)) {
-	                    storeValue = this._getStoreDataByPath(store.key, validationPathInStore);
-	                    _objectPath2.default.set(this, validationPath, storeValue);
-	                }
+	                this._removeValidationInField(store.key, path);
+	                ///* let validationPath = 'validationData.' + path;
+	                // let validationPath = store.key + '.' + validationPath;
+	                // if (objectPath.has(this, validationPath)) {
+	                //
+	                //     //storeValue = this._getStoreDataByPath(store.key, validationPath);
+	                //     //objectPath.set(this, validationPath, storeValue);
+	                // }*/
 	            } else {
-	                console.log('path ' + path + ' not found');
+	                console.log('path ' + fullPath + ' not found');
 	            }
 
 	            if (doUpdate === true) {
 	                this._updateComponent();
+	            }
+	        }
+	    }, {
+	        key: '_removeValidationInField',
+	        value: function _removeValidationInField(storeKey, pathToField) {
+	            if (_utils2.default.Other.isExist(this[storeKey].validationData)) {
+	                _objectPath2.default.set(this[storeKey].validationData, pathToField, undefined);
+
+	                if (Object.keys(this[storeKey].validationData).length === 0) {
+	                    this[storeKey].validationData = undefined;
+	                }
 	            }
 	        }
 	    }, {
@@ -1290,6 +1303,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return;
 	            }
 	            if (_utils2.default.Other.isExist(validationData)) {
+	                //add validationData if validationData object not exist
 	                if (!_objectPath2.default.has(this[storeKey].validationData, path)) {
 	                    this[storeKey].validationData = {};
 	                }
@@ -1298,13 +1312,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	                _objectPath2.default.set(this[storeKey], path, fieldValue);
 
 	                //remove validation for field
-	                if (_utils2.default.Other.isExist(this[storeKey].validationData)) {
-	                    _objectPath2.default.set(this[storeKey].validationData, path, undefined);
-
-	                    if (Object.keys(this[storeKey].validationData).length === 0) {
-	                        this[storeKey].validationData = undefined;
-	                    }
-	                }
+	                this._removeValidationInField(storeKey, path);
+	                /*            if (Utils.Other.isExist(this[storeKey].validationData)) {
+	                                objectPath.set(this[storeKey].validationData, path, undefined);
+	                
+	                                if (Object.keys(this[storeKey].validationData).length === 0) {
+	                                    this[storeKey].validationData = undefined;
+	                                }
+	                            }*/
 	            }
 	            var fullPath = (0, _baseUiState.getFullPath)(storeKey, path);
 	            this._updateField(fullPath);
