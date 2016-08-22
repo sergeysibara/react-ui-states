@@ -26,7 +26,7 @@ export default class DefaultUIState extends BaseUIState {
         }
 
         this.model = stateModel || {};
-        this._startedModel = stateModel || {};
+        this._startedModel = (stateModel)? Utils.Other.deepClone(stateModel) : {};
         this._updatingStore = null;
         this._updatingFieldPath = null;
 
@@ -52,6 +52,7 @@ export default class DefaultUIState extends BaseUIState {
 
     cancelModelChanges() {
         this.model = Utils.Other.deepClone(this._startedModel);
+        this._updateComponent();
     }
 
     cancelStoresChanges(storeKeys, clearValidation = true, validationOnly = false) {
@@ -68,7 +69,6 @@ export default class DefaultUIState extends BaseUIState {
 
     cancelChangesByPath(path, store, doUpdate = true) {
         let fullPath = store.key + '.' + path;
-        debugger;
         if (objectPath.has(this, fullPath)) {
             let storeValue = this._getStoreDataByPath(store.key, path);
             objectPath.set(this, fullPath, storeValue);

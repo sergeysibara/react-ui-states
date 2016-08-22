@@ -266,7 +266,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _classCallCheck(this, DefaultStore);
 
 	        this._key = key;
-	        this._model = { /*validationData: null,*/_lastUpdateTime: Date.now(), _isNew: null, _isExist: false };
+	        this._model = { _lastUpdateTime: Date.now(), _isNew: null, _isExist: false };
 	        this._subscribers = []; //subscriber signature = {id, action}
 	        this._subscribersOnFieldUpdate = []; //subscriber signature = {id, action}
 	    }
@@ -277,7 +277,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var data = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
 	            this._model = data;
-	            //this._model.validationData = null;
 	            this._model._lastUpdateTime = Date.now();
 	            this._model._isNew = true;
 	            this._model._isExist = true;
@@ -289,7 +288,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var data = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
 	            this._model = data;
-	            //this._model.validationData = null;
 	            this._model._lastUpdateTime = Date.now();
 	            this._model._isNew = false;
 	            this._model._isExist = true;
@@ -298,7 +296,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'clear',
 	        value: function clear() {
-	            this._model = { /*validationData: null,*/_lastUpdateTime: Date.now(), _isNew: null, _isExist: false };
+	            this._model = { _lastUpdateTime: Date.now(), _isNew: null, _isExist: false };
 	            this._publish();
 	        }
 	    }, {
@@ -308,7 +306,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                this._model._isNew = false;
 	                Object.assign(this._model, data); //merge with remaining fields
 	            }
-	            //this._model.validationData = validationData;
 	            this._model._lastUpdateTime = Date.now();
 	            this._model._isExist = true;
 	            this._publish(validationData, options);
@@ -319,12 +316,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (!_utils2.default.Other.isExist(validationData)) {
 	                _objectPath2.default.set(this._model, path, data);
 	            }
-	            /*        else {
-	                        if (!Utils.Other.isExist(this._model.validationData)) {
-	                            this._model.validationData = {};
-	                        }
-	                        objectPath.set(this._model.validationData, path, validationData);
-	                    }*/
 	            this._model._lastUpdateTime = Date.now();
 	            this._publishByPath(path, data, validationData, options);
 	        }
@@ -986,7 +977,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        _this.model = stateModel || {};
-	        _this._startedModel = stateModel || {};
+	        _this._startedModel = stateModel ? _utils2.default.Other.deepClone(stateModel) : {};
 	        _this._updatingStore = null;
 	        _this._updatingFieldPath = null;
 
@@ -1040,6 +1031,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'cancelModelChanges',
 	        value: function cancelModelChanges() {
 	            this.model = _utils2.default.Other.deepClone(this._startedModel);
+	            this._updateComponent();
 	        }
 	    }, {
 	        key: 'cancelStoresChanges',
@@ -1084,36 +1076,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var doUpdate = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
 
 	            var fullPath = store.key + '.' + path;
-	            debugger;
 	            if (_objectPath2.default.has(this, fullPath)) {
 	                var storeValue = this._getStoreDataByPath(store.key, path);
 	                _objectPath2.default.set(this, fullPath, storeValue);
-
 	                this._removeValidationInField(store.key, path);
-	                ///* let validationPath = 'validationData.' + path;
-	                // let validationPath = store.key + '.' + validationPath;
-	                // if (objectPath.has(this, validationPath)) {
-	                //
-	                //     //storeValue = this._getStoreDataByPath(store.key, validationPath);
-	                //     //objectPath.set(this, validationPath, storeValue);
-	                // }*/
 	            } else {
 	                console.log('path ' + fullPath + ' not found');
 	            }
 
 	            if (doUpdate === true) {
 	                this._updateComponent();
-	            }
-	        }
-	    }, {
-	        key: '_removeValidationInField',
-	        value: function _removeValidationInField(storeKey, pathToField) {
-	            if (_utils2.default.Other.isExist(this[storeKey].validationData)) {
-	                _objectPath2.default.set(this[storeKey].validationData, pathToField, undefined);
-
-	                if (Object.keys(this[storeKey].validationData).length === 0) {
-	                    this[storeKey].validationData = undefined;
-	                }
 	            }
 	        }
 	    }, {
@@ -1207,9 +1179,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var storeParam = this._getParamByStoreKey(storeKey);
 	            var storeObject = storeParam.cloneStore === true ? storeParam.store.getModelClone() : storeParam.store.getModel();
 
-	            /*        if (!Utils.Other.isExist(storeObject.validationData)) {
-	                        return storeParam.dataConvertFunc(storeObject);
-	                    }*/
 	            return storeObject;
 	        }
 	    }, {
@@ -1310,16 +1279,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                _objectPath2.default.set(this[storeKey].validationData, path, validationData);
 	            } else {
 	                _objectPath2.default.set(this[storeKey], path, fieldValue);
-
-	                //remove validation for field
 	                this._removeValidationInField(storeKey, path);
-	                /*            if (Utils.Other.isExist(this[storeKey].validationData)) {
-	                                objectPath.set(this[storeKey].validationData, path, undefined);
-	                
-	                                if (Object.keys(this[storeKey].validationData).length === 0) {
-	                                    this[storeKey].validationData = undefined;
-	                                }
-	                            }*/
 	            }
 	            var fullPath = (0, _baseUiState.getFullPath)(storeKey, path);
 	            this._updateField(fullPath);
@@ -1354,6 +1314,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this._component.forceUpdate(function () {
 	                _this3._updatingStore = null;
 	            });
+	        }
+	    }, {
+	        key: '_removeValidationInField',
+	        value: function _removeValidationInField(storeKey, pathToField) {
+	            if (_utils2.default.Other.isExist(this[storeKey].validationData)) {
+	                _objectPath2.default.set(this[storeKey].validationData, pathToField, undefined);
+
+	                if (Object.keys(this[storeKey].validationData).length === 0) {
+	                    this[storeKey].validationData = undefined;
+	                }
+	            }
 	        }
 	    }]);
 
