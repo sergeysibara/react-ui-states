@@ -29,7 +29,10 @@ export default class BaseUIState {
 
 
     removeState() {
-         UIStore.removeState(this.id);
+        UIStore.removeState(this.id);
+    }
+
+    _updateComponent() {
     }
 }
 

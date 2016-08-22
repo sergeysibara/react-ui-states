@@ -4,7 +4,7 @@ import objectPath from 'object-path'
 export default class DefaultStore {
     constructor(key) {
         this._key = key;
-        this._model = {validationData: null, _lastUpdateTime: Date.now(), _isNew: null, _isExist: false};
+        this._model = {/*validationData: null,*/ _lastUpdateTime: Date.now(), _isNew: null, _isExist: false};
         this._subscribers = []; //subscriber signature = {id, action}
         this._subscribersOnFieldUpdate = []; //subscriber signature = {id, action}
     }
@@ -15,7 +15,7 @@ export default class DefaultStore {
 
     createNew(data = {}) {
         this._model = data;
-        this._model.validationData = null;
+        //this._model.validationData = null;
         this._model._lastUpdateTime = Date.now();
         this._model._isNew = true;
         this._model._isExist = true;
@@ -24,7 +24,7 @@ export default class DefaultStore {
 
     replace(data = {}) {
         this._model = data;
-        this._model.validationData = null;
+        //this._model.validationData = null;
         this._model._lastUpdateTime = Date.now();
         this._model._isNew = false;
         this._model._isExist = true;
@@ -32,36 +32,36 @@ export default class DefaultStore {
     }
 
     clear() {
-        this._model = {validationData: null, _lastUpdateTime: Date.now(), _isNew: null, _isExist: false};
+        this._model = {/*validationData: null,*/ _lastUpdateTime: Date.now(), _isNew: null, _isExist: false};
         this._publish();
     }
 
     update(data, validationData, options) {
         if (!Utils.Other.isExist(validationData)) {
             this._model._isNew = false;
-            Object.assign(this._model, data);// merge with remaining fields
+            Object.assign(this._model, data); //merge with remaining fields
         }
-        this._model.validationData = validationData;
+        //this._model.validationData = validationData;
         this._model._lastUpdateTime = Date.now();
         this._model._isExist = true;
-        this._publish(options);
+        this._publish(validationData, options);
     }
 
-    updateField(data, validationData, path) {
+    updateField(data, validationData, path, options) {
         if (!Utils.Other.isExist(validationData)) {
             objectPath.set(this._model, path, data);
         }
-        else {
+/*        else {
             if (!Utils.Other.isExist(this._model.validationData)) {
-                this._model.validationData={};
+                this._model.validationData = {};
             }
             objectPath.set(this._model.validationData, path, validationData);
-        }
+        }*/
         this._model._lastUpdateTime = Date.now();
-        this._publishByPath(path, data, validationData);
+        this._publishByPath(path, data, validationData, options);
     }
 
-    clearValidationInField(path){
+    clearValidationInField(path) {
         this.updateField(objectPath.get(this._model, path), null, path);
     }
 
@@ -102,9 +102,9 @@ export default class DefaultStore {
         Utils.Array.removeAt(this._subscribersOnFieldUpdate, index);
     }
 
-    _publish(options) {
+    _publish(validationData, options) {
         for (let subscriber of this._subscribers) {
-            subscriber.action(this.key, this._model, options);
+            subscriber.action(this.key, this._model, validationData, options);
         }
     }
 
@@ -118,9 +118,9 @@ export default class DefaultStore {
         }
     }
 
-    _publishByPath(path, value, validationData) {
+    _publishByPath(path, value, validationData, options) {
         for (let subscriber of this._subscribersOnFieldUpdate) {
-            subscriber.action(this.key, path, value, validationData);
+            subscriber.action(this.key, path, value, validationData, options);
         }
     }
 

@@ -266,7 +266,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _classCallCheck(this, DefaultStore);
 
 	        this._key = key;
-	        this._model = { validationData: null, _lastUpdateTime: Date.now(), _isNew: null, _isExist: false };
+	        this._model = { /*validationData: null,*/_lastUpdateTime: Date.now(), _isNew: null, _isExist: false };
 	        this._subscribers = []; //subscriber signature = {id, action}
 	        this._subscribersOnFieldUpdate = []; //subscriber signature = {id, action}
 	    }
@@ -277,7 +277,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var data = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
 	            this._model = data;
-	            this._model.validationData = null;
+	            //this._model.validationData = null;
 	            this._model._lastUpdateTime = Date.now();
 	            this._model._isNew = true;
 	            this._model._isExist = true;
@@ -289,7 +289,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var data = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
 	            this._model = data;
-	            this._model.validationData = null;
+	            //this._model.validationData = null;
 	            this._model._lastUpdateTime = Date.now();
 	            this._model._isNew = false;
 	            this._model._isExist = true;
@@ -298,7 +298,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'clear',
 	        value: function clear() {
-	            this._model = { validationData: null, _lastUpdateTime: Date.now(), _isNew: null, _isExist: false };
+	            this._model = { /*validationData: null,*/_lastUpdateTime: Date.now(), _isNew: null, _isExist: false };
 	            this._publish();
 	        }
 	    }, {
@@ -306,26 +306,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function update(data, validationData, options) {
 	            if (!_utils2.default.Other.isExist(validationData)) {
 	                this._model._isNew = false;
-	                Object.assign(this._model, data); // merge with remaining fields
+	                Object.assign(this._model, data); //merge with remaining fields
 	            }
-	            this._model.validationData = validationData;
+	            //this._model.validationData = validationData;
 	            this._model._lastUpdateTime = Date.now();
 	            this._model._isExist = true;
-	            this._publish(options);
+	            this._publish(validationData, options);
 	        }
 	    }, {
 	        key: 'updateField',
-	        value: function updateField(data, validationData, path) {
+	        value: function updateField(data, validationData, path, options) {
 	            if (!_utils2.default.Other.isExist(validationData)) {
 	                _objectPath2.default.set(this._model, path, data);
-	            } else {
-	                if (!_utils2.default.Other.isExist(this._model.validationData)) {
-	                    this._model.validationData = {};
-	                }
-	                _objectPath2.default.set(this._model.validationData, path, validationData);
 	            }
+	            /*        else {
+	                        if (!Utils.Other.isExist(this._model.validationData)) {
+	                            this._model.validationData = {};
+	                        }
+	                        objectPath.set(this._model.validationData, path, validationData);
+	                    }*/
 	            this._model._lastUpdateTime = Date.now();
-	            this._publishByPath(path, data, validationData);
+	            this._publishByPath(path, data, validationData, options);
 	        }
 	    }, {
 	        key: 'clearValidationInField',
@@ -383,7 +384,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }, {
 	        key: '_publish',
-	        value: function _publish(options) {
+	        value: function _publish(validationData, options) {
 	            var _iteratorNormalCompletion = true;
 	            var _didIteratorError = false;
 	            var _iteratorError = undefined;
@@ -392,7 +393,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                for (var _iterator = this._subscribers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 	                    var subscriber = _step.value;
 
-	                    subscriber.action(this.key, this._model, options);
+	                    subscriber.action(this.key, this._model, validationData, options);
 	                }
 	            } catch (err) {
 	                _didIteratorError = true;
@@ -423,7 +424,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }, {
 	        key: '_publishByPath',
-	        value: function _publishByPath(path, value, validationData) {
+	        value: function _publishByPath(path, value, validationData, options) {
 	            var _iteratorNormalCompletion2 = true;
 	            var _didIteratorError2 = false;
 	            var _iteratorError2 = undefined;
@@ -432,7 +433,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                for (var _iterator2 = this._subscribersOnFieldUpdate[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
 	                    var subscriber = _step2.value;
 
-	                    subscriber.action(this.key, path, value, validationData);
+	                    subscriber.action(this.key, path, value, validationData, options);
 	                }
 	            } catch (err) {
 	                _didIteratorError2 = true;
@@ -882,6 +883,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function removeState() {
 	            _uiStore2.default.removeState(this.id);
 	        }
+	    }, {
+	        key: '_updateComponent',
+	        value: function _updateComponent() {}
 	    }]);
 
 	    return BaseUIState;
@@ -1009,7 +1013,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                for (var _iterator2 = this._storesParams[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
 	                    var param = _step2.value;
 
-	                    this._setStoreModel(param.store.key, true);
+	                    this._setStoreModel(param.store.key, null, true);
 
 	                    if (clearValidation === true) {
 	                        this[param.store.key].validationData = {};
@@ -1051,7 +1055,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    var key = _step3.value;
 
 	                    if (validationOnly === false) {
-	                        this._setStoreModel(key, true);
+	                        this._setStoreModel(key, null, true);
 	                    }
 	                    if (clearValidation === true) {
 	                        this[key].validationData = {};
@@ -1173,14 +1177,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }, {
 	        key: '_setStoreModel',
-	        value: function _setStoreModel(storeKey) {
-	            var isCancel = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+	        value: function _setStoreModel(storeKey, validationData) {
+	            var isCancel = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
 
 	            var storeObject = this._getStoreModel(storeKey);
-	            if (isCancel === true || !_utils2.default.Other.isExist(storeObject.validationData)) {
+	            if (isCancel === true || !_utils2.default.Other.isExist(validationData)) {
 	                this[storeKey] = storeObject;
 	            } else {
-	                this[storeKey].validationData = storeObject.validationData;
+	                this[storeKey].validationData = validationData;
 	                this[storeKey]._lastUpdateTime = storeObject._lastUpdateTime;
 	            }
 	        }
@@ -1190,9 +1194,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var storeParam = this._getParamByStoreKey(storeKey);
 	            var storeObject = storeParam.cloneStore === true ? storeParam.store.getModelClone() : storeParam.store.getModel();
 
-	            if (!_utils2.default.Other.isExist(storeObject.validationData)) {
-	                return storeParam.dataConvertFunc(storeObject);
-	            }
+	            /*        if (!Utils.Other.isExist(storeObject.validationData)) {
+	                        return storeParam.dataConvertFunc(storeObject);
+	                    }*/
 	            return storeObject;
 	        }
 	    }, {
@@ -1266,12 +1270,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }, {
 	        key: '_onUpdateStore',
-	        value: function _onUpdateStore(storeKey, model, options) {
+	        value: function _onUpdateStore(storeKey, model, validationData, options) {
 	            var storeParam = this._getParamByStoreKey(storeKey);
 	            if (storeParam.updateCondition(model) === false) {
 	                return;
 	            }
-	            this._setStoreModel(storeKey);
+	            this._setStoreModel(storeKey, validationData);
 
 	            if (_utils2.default.Other.isExist(options) && options.doUpdateUIState === false) {
 	                return;
@@ -1280,7 +1284,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }, {
 	        key: '_onUpdateStoreField',
-	        value: function _onUpdateStoreField(storeKey, path, fieldValue, validationData) {
+	        value: function _onUpdateStoreField(storeKey, path, fieldValue, validationData, options) {
 	            var storeParam = this._getParamByStoreKey(storeKey);
 	            if (storeParam.updateFieldCondition(fieldValue) === false) {
 	                return;

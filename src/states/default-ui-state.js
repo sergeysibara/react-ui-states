@@ -41,7 +41,7 @@ export default class DefaultUIState extends BaseUIState {
     cancelAllChanges(clearValidation = true) {
         this.cancelModelChanges();
         for (let param of this._storesParams) {
-            this._setStoreModel(param.store.key, true);
+            this._setStoreModel(param.store.key, null, true);
 
             if (clearValidation === true) {
                 this[param.store.key].validationData = {};
@@ -57,7 +57,7 @@ export default class DefaultUIState extends BaseUIState {
     cancelStoresChanges(storeKeys, clearValidation = true, validationOnly = false) {
         for (let key of storeKeys) {
             if (validationOnly === false) {
-                this._setStoreModel(key, true);
+                this._setStoreModel(key, null, true);
             }
             if (clearValidation === true) {
                 this[key].validationData = {};
@@ -114,13 +114,13 @@ export default class DefaultUIState extends BaseUIState {
         }
     }
 
-    _setStoreModel(storeKey, isCancel = false) {
+    _setStoreModel(storeKey, validationData, isCancel = false) {
         let storeObject = this._getStoreModel(storeKey);
-        if (isCancel === true || !Utils.Other.isExist(storeObject.validationData)) {
+        if (isCancel === true || !Utils.Other.isExist(validationData)) {
             this[storeKey] = storeObject;
         }
         else {
-            this[storeKey].validationData = storeObject.validationData;
+            this[storeKey].validationData = validationData;
             this[storeKey]._lastUpdateTime = storeObject._lastUpdateTime;
         }
     }
@@ -129,9 +129,9 @@ export default class DefaultUIState extends BaseUIState {
         let storeParam = this._getParamByStoreKey(storeKey);
         let storeObject = (storeParam.cloneStore === true) ? storeParam.store.getModelClone() : storeParam.store.getModel();
 
-        if (!Utils.Other.isExist(storeObject.validationData)) {
+/*        if (!Utils.Other.isExist(storeObject.validationData)) {
             return storeParam.dataConvertFunc(storeObject);
-        }
+        }*/
         return storeObject;
     }
 
@@ -158,12 +158,12 @@ export default class DefaultUIState extends BaseUIState {
         }
     }
 
-    _onUpdateStore(storeKey, model, options) {
+    _onUpdateStore(storeKey, model, validationData, options) {
         let storeParam = this._getParamByStoreKey(storeKey);
         if (storeParam.updateCondition(model) === false) {
             return;
         }
-        this._setStoreModel(storeKey);
+        this._setStoreModel(storeKey, validationData);
 
         if (Utils.Other.isExist(options) && options.doUpdateUIState === false) {
             return;
@@ -171,7 +171,7 @@ export default class DefaultUIState extends BaseUIState {
         this._updateComponent(storeKey);
     }
 
-    _onUpdateStoreField(storeKey, path, fieldValue, validationData) {
+    _onUpdateStoreField(storeKey, path, fieldValue, validationData, options) {
         let storeParam = this._getParamByStoreKey(storeKey);
         if (storeParam.updateFieldCondition(fieldValue) === false) {
             return;
@@ -182,7 +182,7 @@ export default class DefaultUIState extends BaseUIState {
             }
             objectPath.set(this[storeKey].validationData, path, validationData);
         }
-        else{
+        else {
             objectPath.set(this[storeKey], path, fieldValue);
 
             //remove validation for field

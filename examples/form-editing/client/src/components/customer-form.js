@@ -10,7 +10,7 @@ let mainStore = Stores.currentCustomer;
 export default class CustomerForm extends Component {
     componentWillMount() {
         this.uiState = new DefaultUIState(this, null, [{store: mainStore}]);
-        setTimeout(Network.getCustomer, 0);
+        Network.getCustomer();
     }
 
     componentWillUnmount() {
@@ -34,7 +34,7 @@ export default class CustomerForm extends Component {
     }
 
 
-    mapInputProps(field) {
+    mapToInputProps(field) {
         return {
             type: "text",
             name: field,
@@ -48,9 +48,9 @@ export default class CustomerForm extends Component {
         return (
             <div>
                 <form ref="form">
-                    <InputWrapper label="Customer name" {...this.mapInputProps('name')}/>
-                    <InputWrapper label="Customer city" {...this.mapInputProps('city')}/>
-                    <InputWrapper label="Customer email" {...this.mapInputProps('email')}/>
+                    <InputWrapper label="Customer name" {...this.mapToInputProps('name')}/>
+                    <InputWrapper label="Customer city" {...this.mapToInputProps('city')}/>
+                    <InputWrapper label="Customer email" {...this.mapToInputProps('email')}/>
                 </form>
                 <button onClick={this.handleCancel.bind(this)}>Cancel</button>
                 <button onClick={this.handleSave.bind(this)}>Save</button>

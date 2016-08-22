@@ -8,7 +8,7 @@ let mainStore = Stores.customers;
 export default class List extends Component {
     componentWillMount() {
         this.uiState = new DefaultUIState(this, null, [{store: mainStore}]);
-        setTimeout(Network.getCustomers, 0);
+        Network.getCustomers();
     }
 
     componentWillUnmount() {
