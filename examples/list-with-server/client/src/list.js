@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-
 import Stores from './stores.js'
 import Network from './network.js'
 import {DefaultUIState } from 'ui-states'
 
 let mainStore = Stores.customers;
+
 export default class List extends Component {
     componentWillMount() {
         this.uiState = new DefaultUIState(this, null, [{store: mainStore}]);

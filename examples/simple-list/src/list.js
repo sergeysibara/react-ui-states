@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-
 import Stores from './stores.js'
-import {DefaultUIState } from 'ui-states'
+import {DefaultUIState} from 'ui-states'
 
-let mainStore = Stores.customers;
+const mainStore = Stores.customers;
+
 export default class List extends Component {
     componentWillMount() {
         this.uiState = new DefaultUIState(this, null, [{store: mainStore}]);
@@ -15,7 +15,7 @@ export default class List extends Component {
 
     handleClick() {
         //load data imitation
-        mainStore.update({
+        Stores.customers.update({
             items: [
                 {id: 1, name: 'Alexey', city: 'Moscow', email: 'alexey@gmail.com'},
                 {id: 2, name: 'Andrey', city: 'Bangkok', email: 'andrey@gmail.com'},

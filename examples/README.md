@@ -8,6 +8,7 @@ React UI States examples
 "simple-list" example: ```$ npm run build:simple-list```  
 "list-with-server" example: ```$ npm run build:list-with-server```  
 "form-editing" example: ```$ npm run build:form-editing```  
+all example: ```$ npm run build:all```
 
 ### Run examples
 1. "simple-list"  

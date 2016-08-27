@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
-
 import Stores from './../stores.js'
 import Network from './../network.js'
-import {DefaultUIState } from 'ui-states'
+import {DefaultUIState} from 'ui-states'
 import InputWrapper from './input-wrapper.js'
 
-
 let mainStore = Stores.currentCustomer;
+
 export default class CustomerForm extends Component {
     componentWillMount() {
         this.uiState = new DefaultUIState(this, null, [{store: mainStore}]);
@@ -26,7 +25,7 @@ export default class CustomerForm extends Component {
     }
 
     handleCancelCity() {
-        this.uiState.cancelChangesByPath('city', mainStore);
+        this.uiState.cancelChangesByPath('city', mainStore.key);
     }
 
     handleSaveCity() {

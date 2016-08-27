@@ -78,7 +78,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _uiStore = __webpack_require__(7);
+	var _defaultStoreDecorator = __webpack_require__(7);
+
+	Object.defineProperty(exports, 'DefaultStoreDecorator', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_defaultStoreDecorator).default;
+	  }
+	});
+
+	var _uiStore = __webpack_require__(8);
 
 	Object.defineProperty(exports, 'UIStore', {
 	  enumerable: true,
@@ -87,7 +96,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _baseUiState = __webpack_require__(8);
+	var _baseUiState = __webpack_require__(9);
 
 	Object.defineProperty(exports, 'BaseUIState', {
 	  enumerable: true,
@@ -96,7 +105,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _defaultUiState = __webpack_require__(9);
+	var _defaultUiState = __webpack_require__(10);
 
 	Object.defineProperty(exports, 'DefaultUIState', {
 	  enumerable: true,
@@ -759,6 +768,73 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 7 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var DefaultStoreDecorator = function () {
+	    function DefaultStoreDecorator(store) {
+	        var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	        _classCallCheck(this, DefaultStoreDecorator);
+
+	        this.isDecorator = true;
+
+	        this._store = store;
+	        this._params = {};
+	        this.key = store.key;
+
+	        //setup default params
+	        this._params.useStoreClone = params.useStoreClone || true;
+	        this._params.convertModel = params.convertModel || function (m) {
+	            return m;
+	        };
+	    }
+
+	    _createClass(DefaultStoreDecorator, [{
+	        key: "getModel",
+	        value: function getModel() {
+	            var storeModel = this._params.useStoreClone === true ? this._store.getModelClone() : this._store.store.getModel();
+	            return this._params.convertModel(storeModel);
+	        }
+	    }, {
+	        key: "getDataByPath",
+	        value: function getDataByPath(pathInStore) {
+	            var storeData = this._params.useStoreClone === true ? this._store.getDataCloneByPath(pathInStore) : this._store.getDataByPath(pathInStore);
+	            return storeData;
+	        }
+	    }, {
+	        key: "subscribe",
+	        value: function subscribe(id, onUpdateStore) {
+	            this._store.subscribe(id, onUpdateStore);
+	        }
+	    }, {
+	        key: "subscribeOnFieldUpdate",
+	        value: function subscribeOnFieldUpdate(id, onUpdateStoreField) {
+	            this._store.subscribeOnFieldUpdate(id, onUpdateStoreField);
+	        }
+	    }, {
+	        key: "unSubscribe",
+	        value: function unSubscribe(id) {
+	            this._store.subscribeOnFieldUpdate(id);
+	        }
+	    }]);
+
+	    return DefaultStoreDecorator;
+	}();
+
+	exports.default = DefaultStoreDecorator;
+
+/***/ },
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -806,7 +882,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = UIStore;
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -819,7 +895,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.getFullPath = getFullPath;
 
-	var _uiStore = __webpack_require__(7);
+	var _uiStore = __webpack_require__(8);
 
 	var _uiStore2 = _interopRequireDefault(_uiStore);
 
@@ -892,7 +968,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -913,9 +989,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _utils2 = _interopRequireDefault(_utils);
 
-	var _baseUiState = __webpack_require__(8);
+	var _baseUiState = __webpack_require__(9);
 
 	var _baseUiState2 = _interopRequireDefault(_baseUiState);
+
+	var _defaultStoreDecorator = __webpack_require__(7);
+
+	var _defaultStoreDecorator2 = _interopRequireDefault(_defaultStoreDecorator);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -938,8 +1018,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _this._onUpdateStore = _this._onUpdateStore.bind(_this);
 	        _this._onUpdateStoreField = _this._onUpdateStoreField.bind(_this);
 
+	        _this.model = stateModel || {};
+	        _this._initialModel = stateModel ? _utils2.default.Other.deepClone(stateModel) : {};
 	        _this._component = component;
-	        _this._storesParams = storesParams;
+	        _this._storesParams = [];
+	        _this._updatedStore = null;
+	        _this._updatedFieldPath = null;
 
 	        //setup default storesParams
 	        var _iteratorNormalCompletion = true;
@@ -947,19 +1031,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var _iteratorError = undefined;
 
 	        try {
-	            for (var _iterator = _this._storesParams[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	                var param = _step.value;
+	            for (var _iterator = storesParams[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                var params = _step.value;
 
-	                param.cloneStore = param.cloneStore || true;
-	                param.dataConvertFunc = param.dataConvertFunc || function (data) {
-	                    return data;
-	                };
-	                param.updateCondition = param.updateCondition || function () {
+	                var newParams = Object.assign({}, params);
+	                if (!_utils2.default.Other.isExist(newParams.store)) {
+	                    console.error('params.store is empty in component ' + _this._component.constructor.name);
+	                    return _possibleConstructorReturn(_this);
+	                }
+
+	                newParams.updateCondition = newParams.updateCondition || function () {
 	                    return true;
 	                };
-	                param.updateFieldCondition = param.updateFieldCondition || function () {
+	                newParams.updateFieldCondition = newParams.updateFieldCondition || function () {
 	                    return true;
 	                };
+
+	                if (newParams.store.isDecorator !== true) {
+	                    newParams.store = new _defaultStoreDecorator2.default(newParams.store);
+	                }
+
+	                _this._storesParams.push(newParams);
 	            }
 	        } catch (err) {
 	            _didIteratorError = true;
@@ -976,17 +1068,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        }
 
-	        _this.model = stateModel || {};
-	        _this._startedModel = stateModel ? _utils2.default.Other.deepClone(stateModel) : {};
-	        _this._updatingStore = null;
-	        _this._updatingFieldPath = null;
-
-	        var isValid = _this._validateParams(_this._storesParams);
-
-	        if (isValid) {
-	            _this._subscribeToStores(storesParams);
-	            _this._setStoreModels();
-	        }
+	        _this._subscribeToStores(storesParams);
+	        _this._setStoreModels();
 	        return _this;
 	    }
 
@@ -995,7 +1078,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function cancelAllChanges() {
 	            var clearValidation = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
 
-	            this.cancelModelChanges();
+	            this.cancelModelChanges(false);
 	            var _iteratorNormalCompletion2 = true;
 	            var _didIteratorError2 = false;
 	            var _iteratorError2 = undefined;
@@ -1030,8 +1113,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'cancelModelChanges',
 	        value: function cancelModelChanges() {
-	            this.model = _utils2.default.Other.deepClone(this._startedModel);
-	            this._updateComponent();
+	            var doUpdate = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+	            this.model = _utils2.default.Other.deepClone(this._initialModel);
+	            if (doUpdate) {
+	                this._updateComponent();
+	            }
 	        }
 	    }, {
 	        key: 'cancelStoresChanges',
@@ -1072,14 +1159,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }, {
 	        key: 'cancelChangesByPath',
-	        value: function cancelChangesByPath(path, store) {
+	        value: function cancelChangesByPath(path, storeKey) {
 	            var doUpdate = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
 
-	            var fullPath = store.key + '.' + path;
+	            var fullPath = storeKey + '.' + path;
 	            if (_objectPath2.default.has(this, fullPath)) {
-	                var storeValue = this._getStoreDataByPath(store.key, path);
+	                var storeParams = this._getParamByStoreKey(storeKey);
+	                var storeValue = storeParams.store.getDataByPath(path);
 	                _objectPath2.default.set(this, fullPath, storeValue);
-	                this._removeValidationInField(store.key, path);
+	                this._removeValidationInField(storeKey, path);
 	            } else {
 	                console.log('path ' + fullPath + ' not found');
 	            }
@@ -1118,8 +1206,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        }
 	    }, {
-	        key: 'getLastStoreUpdateTime',
-	        value: function getLastStoreUpdateTime(storeKey) {
+	        key: 'storeLastUpdateTime',
+	        value: function storeLastUpdateTime(storeKey) {
 	            return this[storeKey]._lastUpdateTime;
 	        }
 	    }, {
@@ -1165,7 +1253,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function _setStoreModel(storeKey, validationData) {
 	            var isCancel = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
 
-	            var storeObject = this._getStoreModel(storeKey);
+	            var storeParams = this._getParamByStoreKey(storeKey);
+	            var storeObject = storeParams.store.getModel();
 	            if (isCancel === true || !_utils2.default.Other.isExist(validationData)) {
 	                this[storeKey] = storeObject;
 	            } else {
@@ -1174,23 +1263,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        }
 	    }, {
-	        key: '_getStoreModel',
-	        value: function _getStoreModel(storeKey) {
-	            var storeParam = this._getParamByStoreKey(storeKey);
-	            var storeObject = storeParam.cloneStore === true ? storeParam.store.getModelClone() : storeParam.store.getModel();
-
-	            return storeObject;
-	        }
-	    }, {
-	        key: '_getStoreDataByPath',
-	        value: function _getStoreDataByPath(storeKey, pathInStore) {
-	            var storeParam = this._getParamByStoreKey(storeKey);
-	            var storeData = storeParam.cloneStore === true ? storeParam.store.getDataCloneByPath(pathInStore) : storeParam.store.getDataByPath(pathInStore);
-	            return storeData;
-	        }
-	    }, {
-	        key: '_validateParams',
-	        value: function _validateParams(storesParams) {
+	        key: '_subscribeToStores',
+	        value: function _subscribeToStores(storesParams) {
 	            var _iteratorNormalCompletion6 = true;
 	            var _didIteratorError6 = false;
 	            var _iteratorError6 = undefined;
@@ -1199,10 +1273,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                for (var _iterator6 = storesParams[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
 	                    var param = _step6.value;
 
-	                    if (!_utils2.default.Other.isExist(param.store)) {
-	                        console.error('param.store is empty in component ' + this._component.constructor.name);
-	                        return false;
-	                    }
+	                    param.store.subscribe(this.id, this._onUpdateStore);
+	                    param.store.subscribeOnFieldUpdate(this.id, this._onUpdateStoreField);
 	                }
 	            } catch (err) {
 	                _didIteratorError6 = true;
@@ -1218,43 +1290,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    }
 	                }
 	            }
-
-	            return true;
-	        }
-	    }, {
-	        key: '_subscribeToStores',
-	        value: function _subscribeToStores(storesParams) {
-	            var _iteratorNormalCompletion7 = true;
-	            var _didIteratorError7 = false;
-	            var _iteratorError7 = undefined;
-
-	            try {
-	                for (var _iterator7 = storesParams[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-	                    var param = _step7.value;
-
-	                    param.store.subscribe(this.id, this._onUpdateStore);
-	                    param.store.subscribeOnFieldUpdate(this.id, this._onUpdateStoreField);
-	                }
-	            } catch (err) {
-	                _didIteratorError7 = true;
-	                _iteratorError7 = err;
-	            } finally {
-	                try {
-	                    if (!_iteratorNormalCompletion7 && _iterator7.return) {
-	                        _iterator7.return();
-	                    }
-	                } finally {
-	                    if (_didIteratorError7) {
-	                        throw _iteratorError7;
-	                    }
-	                }
-	            }
 	        }
 	    }, {
 	        key: '_onUpdateStore',
 	        value: function _onUpdateStore(storeKey, model, validationData, options) {
-	            var storeParam = this._getParamByStoreKey(storeKey);
-	            if (storeParam.updateCondition(model) === false) {
+	            var storeParams = this._getParamByStoreKey(storeKey);
+	            if (storeParams.updateCondition(model) === false) {
 	                return;
 	            }
 	            this._setStoreModel(storeKey, validationData);
@@ -1298,9 +1339,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var path = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
-	            this._updatingFieldPath = path;
+	            this._updatedFieldPath = path;
 	            this._component.forceUpdate(function () {
-	                _this2._updatingFieldPath = null;
+	                _this2._updatedFieldPath = null;
 	            });
 	        }
 	    }, {
@@ -1310,9 +1351,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var storeKey = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
-	            this._updatingStore = storeKey;
+	            this._updatedStore = storeKey;
 	            this._component.forceUpdate(function () {
-	                _this3._updatingStore = null;
+	                _this3._updatedStore = null;
 	            });
 	        }
 	    }, {

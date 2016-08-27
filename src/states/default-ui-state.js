@@ -1,6 +1,7 @@
 import objectPath from 'object-path'
 import Utils from 'utils'
 import BaseUIState, {getFullPath} from './base-ui-state.js'
+import DefaultStoreDecorator from './../stores/default-store-decorator'
 
 export default class DefaultUIState extends BaseUIState {
     constructor(component, stateModel, storesParams = []) {
@@ -8,38 +9,37 @@ export default class DefaultUIState extends BaseUIState {
         this._onUpdateStore = this._onUpdateStore.bind(this);
         this._onUpdateStoreField = this._onUpdateStoreField.bind(this);
 
+        this.model = stateModel || {};
+        this._initialModel = (stateModel)? Utils.Other.deepClone(stateModel) : {};
         this._component = component;
-        this._storesParams = storesParams;
+        this._storesParams = [];
+        this._updatedStore = null;
+        this._updatedFieldPath = null;
 
         //setup default storesParams
-        for (let param of this._storesParams) {
-            param.cloneStore = param.cloneStore || true;
-            param.dataConvertFunc = param.dataConvertFunc || ((data)=> {
-                    return data
-                });
-            param.updateCondition = param.updateCondition || (()=> {
-                    return true
-                });
-            param.updateFieldCondition = param.updateFieldCondition || (()=> {
-                    return true
-                });
+        for (let params of storesParams) {
+            let newParams = Object.assign({}, params);
+            if (!Utils.Other.isExist(newParams.store)) {
+                console.error('params.store is empty in component ' + this._component.constructor.name);
+                return;
+            }
+
+            newParams.updateCondition = newParams.updateCondition || ( () => true );
+            newParams.updateFieldCondition = newParams.updateFieldCondition || ( () => true);
+
+            if (newParams.store.isDecorator !== true) {
+                newParams.store = new DefaultStoreDecorator(newParams.store);
+            }
+
+            this._storesParams.push(newParams);
         }
 
-        this.model = stateModel || {};
-        this._startedModel = (stateModel)? Utils.Other.deepClone(stateModel) : {};
-        this._updatingStore = null;
-        this._updatingFieldPath = null;
-
-        let isValid = this._validateParams(this._storesParams);
-
-        if (isValid) {
-            this._subscribeToStores(storesParams);
-            this._setStoreModels();
-        }
+        this._subscribeToStores(storesParams);
+        this._setStoreModels();
     }
 
     cancelAllChanges(clearValidation = true) {
-        this.cancelModelChanges();
+        this.cancelModelChanges(false);
         for (let param of this._storesParams) {
             this._setStoreModel(param.store.key, null, true);
 
@@ -50,9 +50,11 @@ export default class DefaultUIState extends BaseUIState {
         this._updateComponent();
     }
 
-    cancelModelChanges() {
-        this.model = Utils.Other.deepClone(this._startedModel);
-        this._updateComponent();
+    cancelModelChanges(doUpdate = true) {
+        this.model = Utils.Other.deepClone(this._initialModel);
+        if (doUpdate) {
+            this._updateComponent();
+        }
     }
 
     cancelStoresChanges(storeKeys, clearValidation = true, validationOnly = false) {
@@ -67,12 +69,13 @@ export default class DefaultUIState extends BaseUIState {
         this._updateComponent();
     }
 
-    cancelChangesByPath(path, store, doUpdate = true) {
-        let fullPath = store.key + '.' + path;
+    cancelChangesByPath(path, storeKey, doUpdate = true) {
+        let fullPath = storeKey + '.' + path;
         if (objectPath.has(this, fullPath)) {
-            let storeValue = this._getStoreDataByPath(store.key, path);
+            let storeParams = this._getParamByStoreKey(storeKey);
+            let storeValue = storeParams.store.getDataByPath(path);
             objectPath.set(this, fullPath, storeValue);
-            this._removeValidationInField(store.key, path);
+            this._removeValidationInField(storeKey, path);
         }
         else {
             console.log(`path ${fullPath} not found`);
@@ -90,7 +93,7 @@ export default class DefaultUIState extends BaseUIState {
         }
     }
 
-    getLastStoreUpdateTime(storeKey) {
+    storeLastUpdateTime(storeKey) {
         return this[storeKey]._lastUpdateTime;
     }
 
@@ -109,7 +112,8 @@ export default class DefaultUIState extends BaseUIState {
     }
 
     _setStoreModel(storeKey, validationData, isCancel = false) {
-        let storeObject = this._getStoreModel(storeKey);
+        let storeParams = this._getParamByStoreKey(storeKey);
+        let storeObject = storeParams.store.getModel();
         if (isCancel === true || !Utils.Other.isExist(validationData)) {
             this[storeKey] = storeObject;
         }
@@ -117,29 +121,6 @@ export default class DefaultUIState extends BaseUIState {
             this[storeKey].validationData = validationData;
             this[storeKey]._lastUpdateTime = storeObject._lastUpdateTime;
         }
-    }
-
-    _getStoreModel(storeKey) {
-        let storeParam = this._getParamByStoreKey(storeKey);
-        let storeObject = (storeParam.cloneStore === true) ? storeParam.store.getModelClone() : storeParam.store.getModel();
-
-        return storeObject;
-    }
-
-    _getStoreDataByPath(storeKey, pathInStore) {
-        let storeParam = this._getParamByStoreKey(storeKey);
-        let storeData = (storeParam.cloneStore === true) ? storeParam.store.getDataCloneByPath(pathInStore) : storeParam.store.getDataByPath(pathInStore);
-        return storeData;
-    }
-
-    _validateParams(storesParams) {
-        for (let param of storesParams) {
-            if (!Utils.Other.isExist(param.store)) {
-                console.error('param.store is empty in component ' + this._component.constructor.name);
-                return false;
-            }
-        }
-        return true;
     }
 
     _subscribeToStores(storesParams) {
@@ -150,8 +131,8 @@ export default class DefaultUIState extends BaseUIState {
     }
 
     _onUpdateStore(storeKey, model, validationData, options) {
-        let storeParam = this._getParamByStoreKey(storeKey);
-        if (storeParam.updateCondition(model) === false) {
+        let storeParams = this._getParamByStoreKey(storeKey);
+        if (storeParams.updateCondition(model) === false) {
             return;
         }
         this._setStoreModel(storeKey, validationData);
@@ -187,17 +168,17 @@ export default class DefaultUIState extends BaseUIState {
     }
 
     _updateField(path = null) {
-        this._updatingFieldPath = path;
+        this._updatedFieldPath = path;
         this._component.forceUpdate(()=> {
-                this._updatingFieldPath = null;
+                this._updatedFieldPath = null;
             }
         );
     }
 
     _updateComponent(storeKey = null) {
-        this._updatingStore = storeKey;
+        this._updatedStore = storeKey;
         this._component.forceUpdate(()=> {
-                this._updatingStore = null;
+                this._updatedStore = null;
             }
         );
     }

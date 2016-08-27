@@ -1,7 +1,12 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {Utils} from 'ui-states';
 
 export default class InputWrapper extends Component {
+    static propTypes = {
+        parentUiState: PropTypes.object.isRequired,
+        pathToField: PropTypes.string.isRequired,
+        pathToValidationField: PropTypes.string.isRequired,
+    };
 
     getFullPath(path, field) {
         let fullPath = field;
