@@ -1,0 +1,19 @@
+button {
+    min-width: 150px;
+}
+
+span + button {
+    margin-left: 20px;
+}
+
+.list {
+    width: 450px;
+    display: inline-block;
+    margin-right: 100px;
+    vertical-align: top;
+}
+
+.table-row > * {
+    width: 150px;
+    display: inline-block;
+}

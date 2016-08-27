@@ -2,15 +2,13 @@ export default class DefaultStoreDecorator {
     constructor(store, params = {}) {
         this._store = store;
         this._params = {};
-        this.key = store.key;
 
         //setup default params
         this._params.useStoreClone = params.useStoreClone || true;
         this._params.convertModel = params.convertModel || ( m => m );
     }
-
-    isDecorator = true;
-
+    get isDecorator() { return true};
+    get key() { return this._store.key};
 
     getModel() {
         let storeModel = (this._params.useStoreClone === true) ?

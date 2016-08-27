@@ -69,6 +69,17 @@ export default class DefaultUIState extends BaseUIState {
         this._updateComponent();
     }
 
+    updateFromStores(storeKeys, doUpdate = true) {
+        for (let key of storeKeys) {
+            let validationData = this[key].validationData;
+            this._setStoreModel(key);
+            this[key].validationData = validationData;
+        }
+        if (doUpdate === true) {
+            this._updateComponent();
+        }
+    }
+
     cancelChangesByPath(path, storeKey, doUpdate = true) {
         let fullPath = storeKey + '.' + path;
         if (objectPath.has(this, fullPath)) {

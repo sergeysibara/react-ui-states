@@ -19,6 +19,15 @@ export default class Other {
         return false;
     }
 
+    static isExistAll(values) {
+        for (let value of values){
+            if (!Other.isExist(value)){
+                return false;
+            }
+        }
+        return true;
+    }
+
     static deepClone(obj) {
         return JSON.parse(JSON.stringify(obj));
     }
