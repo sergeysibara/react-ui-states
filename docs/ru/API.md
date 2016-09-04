@@ -138,6 +138,8 @@ this.uiState = new DefaultUIState(this, null, [
 * doUpdate – выполнить обновление компонента в конце работы функции или нет.
 * clearValidation – указывает, удалять ли данные валидации или нет.
 
+* updatedStore - имя хранилища, вызвавшего обновление компонента. Имеет значение только во время выполнения forceUpdate.
+* updatedFieldPath - путь к полю, вызвавшего обновление компонента. Имеет значение только во время выполнения forceUpdate.
 * cancelAllChanges(clearValidation = true) - отменяет все изменения в uiState. Все данные, полученные их хранилищ, считываются из хранилищ еще раз. Прочие данные(объект uiState.model) сбрасываются к состоянию, которое было при вызове конструктора DefaultUIState.
 * cancelModelChanges(doUpdate = true) - отменяет только изменения в объекте uiState.model.
 * cancelStoresChanges(storeKeys, clearValidation = true, validationOnly = false) - отменяет только изменения в указанных хранилищах. Параметр validationOnly равный true указывает, что нужно удалить только данные валидации.

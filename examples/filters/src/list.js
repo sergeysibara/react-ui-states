@@ -12,7 +12,7 @@ export default class List extends Component {
         };
         this.uiState = new DefaultUIState(this, stateModel, [{
             store: new DefaultStoreDecorator(mainStore, {
-                convertModel: this.applyFilter.bind(this)
+                convertModel: this.applyFilter
             })
         }]);
 
@@ -32,7 +32,7 @@ export default class List extends Component {
         this.uiState.removeState();
     }
 
-    applyFilter(model) {
+    applyFilter = (model) => {
         if (!Utils.Other.isExist(this.uiState)) {
             return model;
         }
@@ -60,22 +60,22 @@ export default class List extends Component {
             default:
                 return model;
         }
-    }
+    };
 
-    handleFilterByName() {
+    handleFilterByName = () => {
         this.uiState.set('model.filterType', 'name', false);
         this.uiState.set('model.filterValue', 'Andrey', false);
         this.uiState.updateFromStores([mainStore.key]);
-    }
+    };
 
-    handleFilterByCity() {
+    handleFilterByCity = () => {
         this.uiState.set('model', {filterType: 'city', filterValue: 'Bangkok'}, false); //another variant with object replacing by path
         this.uiState.updateFromStores([mainStore.key]);
-    }
+    };
 
-    handleClearFilters() {
+    handleClearFilters = () => {
         this.uiState.cancelAllChanges();
-    }
+    };
 
     render() {
         return (
@@ -89,12 +89,12 @@ export default class List extends Component {
                 </For>
                 <br/>
                 <span>Filter by name containing 'Andrey' text:</span>
-                <button onClick={this.handleFilterByName.bind(this)}>apply filter</button>
+                <button onClick={this.handleFilterByName}>apply filter</button>
                 <br/><br/>
                 <span>Filter by city containing 'Bangkok' text:</span>
-                <button onClick={this.handleFilterByCity.bind(this)}>apply filter</button>
+                <button onClick={this.handleFilterByCity}>apply filter</button>
                 <br/><br/>
-                <button onClick={this.handleClearFilters.bind(this)}>clear filters</button>
+                <button onClick={this.handleClearFilters}>clear filters</button>
             </div>
         )
     }

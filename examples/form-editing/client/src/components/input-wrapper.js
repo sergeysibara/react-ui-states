@@ -26,18 +26,18 @@ export default class InputWrapper extends Component {
         return value || '';
     }
 
-    handleOnChange(e) {
+    handleOnChange = (e) => {
         let newValue = e.target.value;
         this.props.parentUiState.set(this.getFullPath(this.props.pathToField, this.props.name), newValue, false);
 
         if (Utils.Other.isExist(this.props.onChange)) {
             this.props.onChange(e);
         }
-        this.forceUpdate();
-    }
+        this.setState({newValue: newValue});
+    };
 
     render() {
-        const { parentUiState, pathToField, pathToValidationField, ...inputProps } = this.props;
+        const {parentUiState, pathToField, pathToValidationField, ...inputProps} = this.props;
 
         let errorClassName = '';
         if (this.getValidationData().length > 0) {
@@ -48,8 +48,8 @@ export default class InputWrapper extends Component {
             <div className={'form-group' + errorClassName}>
                 <label htmlFor={this.props.name}>{this.props.label}</label>
                 <input {...inputProps}
-                    value={this.getUIStateValue()}
-                    onChange={this.handleOnChange.bind(this)}>
+                       value={this.getUIStateValue()}
+                       onChange={this.handleOnChange}>
                 </input>
                 <span className='help-block'>{this.getValidationData()}</span>
             </div>

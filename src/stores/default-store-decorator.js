@@ -31,7 +31,7 @@ export default class DefaultStoreDecorator {
     }
 
     unSubscribe(id) {
-        this._store.subscribeOnFieldUpdate(id);
+        this._store.unSubscribe(id);
     }
 
 }

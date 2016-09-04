@@ -345,10 +345,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function update(data, validationData, options) {
 	            if (!_utils2.default.Other.isExist(validationData)) {
 	                this._model._isNew = false;
+	                this._model._isExist = true;
 	                Object.assign(this._model, data); //merge with remaining fields
 	            }
 	            this._model._lastUpdateTime = Date.now();
-	            this._model._isExist = true;
 	            this._publish(validationData, options);
 	        }
 	    }, {
@@ -853,7 +853,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: "unSubscribe",
 	        value: function unSubscribe(id) {
-	            this._store.subscribeOnFieldUpdate(id);
+	            this._store.unSubscribe(id);
 	        }
 	    }, {
 	        key: "isDecorator",
@@ -1383,7 +1383,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: '_onUpdateStoreField',
 	        value: function _onUpdateStoreField(storeKey, path, fieldValue, validationData, options) {
 	            var storeParam = this._getParamByStoreKey(storeKey);
-	            if (storeParam.updateFieldCondition(fieldValue) === false) {
+	            if (storeParam.updateFieldCondition(path, fieldValue) === false) {
 	                return;
 	            }
 	            if (_utils2.default.Other.isExist(validationData)) {
@@ -1440,6 +1440,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    this[storeKey].validationData = undefined;
 	                }
 	            }
+	        }
+	    }, {
+	        key: 'updatedStore',
+	        get: function get() {
+	            return this._updatedStore;
+	        }
+	    }, {
+	        key: 'updatedFieldPath',
+	        get: function get() {
+	            return this._updatedFieldPath;
 	        }
 	    }]);
 

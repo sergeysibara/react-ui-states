@@ -38,6 +38,14 @@ export default class DefaultUIState extends BaseUIState {
         this._setStoreModels();
     }
 
+    get updatedStore(){
+        return this._updatedStore;
+    }
+
+    get updatedFieldPath(){
+        return this._updatedFieldPath;
+    }
+
     cancelAllChanges(clearValidation = true) {
         this.cancelModelChanges(false);
         for (let param of this._storesParams) {
@@ -156,7 +164,7 @@ export default class DefaultUIState extends BaseUIState {
 
     _onUpdateStoreField(storeKey, path, fieldValue, validationData, options) {
         let storeParam = this._getParamByStoreKey(storeKey);
-        if (storeParam.updateFieldCondition(fieldValue) === false) {
+        if (storeParam.updateFieldCondition(path, fieldValue) === false) {
             return;
         }
         if (Utils.Other.isExist(validationData)) {

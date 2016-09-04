@@ -28,6 +28,6 @@
     "watch:form-editing": "webpack --config form-editing/client/webpack.config.js --watch",
     "build:filters": "webpack --config filters/webpack.config.js",
     "watch:filters": "webpack --config filters/webpack.config.js --watch",
-    "build:all": "npm run build:simple-list && npm run build:list-with-server && npm run build:form-editing && webpack --config filters/webpack.config.js"
+    "build:all": "npm run build:simple-list && npm run build:list-with-server && npm run build:form-editing && npm run build:filters"
   }
 }

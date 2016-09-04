@@ -37,10 +37,10 @@ export default class DefaultStore {
     update(data, validationData, options) {
         if (!Utils.Other.isExist(validationData)) {
             this._model._isNew = false;
+            this._model._isExist = true;
             Object.assign(this._model, data); //merge with remaining fields
         }
         this._model._lastUpdateTime = Date.now();
-        this._model._isExist = true;
         this._publish(validationData, options);
     }
 
