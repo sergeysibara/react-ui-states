@@ -1,11 +1,11 @@
-import UIStore from './ui-store.js'
+import StatesStore from './states-store.js'
 import Utils from 'utils'
 import objectPath from 'object-path'
 
 export default class BaseUIState {
     constructor() {
         this.id = Utils.Other.createGuid();
-        UIStore.addState(this);
+        StatesStore.addState(this);
     }
 
     set(path, newValue, doComponentUpdate = true) {
@@ -29,7 +29,7 @@ export default class BaseUIState {
 
 
     removeState() {
-        UIStore.removeState(this.id);
+        StatesStore.removeState(this.id);
     }
 
     _updateComponent() {

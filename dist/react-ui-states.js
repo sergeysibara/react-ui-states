@@ -87,12 +87,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _uiStore = __webpack_require__(8);
+	var _statesStore = __webpack_require__(8);
 
-	Object.defineProperty(exports, 'UIStore', {
+	Object.defineProperty(exports, 'StatesStore', {
 	  enumerable: true,
 	  get: function get() {
-	    return _interopRequireDefault(_uiStore).default;
+	    return _interopRequireDefault(_statesStore).default;
 	  }
 	});
 
@@ -892,33 +892,33 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var UIStore = function () {
-	    function UIStore() {
-	        _classCallCheck(this, UIStore);
+	var StatesStore = function () {
+	    function StatesStore() {
+	        _classCallCheck(this, StatesStore);
 	    }
 
-	    _createClass(UIStore, null, [{
+	    _createClass(StatesStore, null, [{
 	        key: 'addState',
 	        value: function addState(state) {
-	            UIStore._states.push(state);
+	            StatesStore._states.push(state);
 	        }
 	    }, {
 	        key: 'removeState',
 	        value: function removeState(id) {
-	            var index = UIStore._states.findIndex(function (s) {
+	            var index = StatesStore._states.findIndex(function (s) {
 	                return s.id === id;
 	            });
 	            if (index > -1) {
-	                _utils2.default.Array.removeAt(UIStore._states, index);
+	                _utils2.default.Array.removeAt(StatesStore._states, index);
 	            }
 	        }
 	    }]);
 
-	    return UIStore;
+	    return StatesStore;
 	}();
 
-	UIStore._states = [];
-	exports.default = UIStore;
+	StatesStore._states = [];
+	exports.default = StatesStore;
 
 /***/ },
 /* 9 */
@@ -934,9 +934,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.getFullPath = getFullPath;
 
-	var _uiStore = __webpack_require__(8);
+	var _statesStore = __webpack_require__(8);
 
-	var _uiStore2 = _interopRequireDefault(_uiStore);
+	var _statesStore2 = _interopRequireDefault(_statesStore);
 
 	var _utils = __webpack_require__(1);
 
@@ -955,7 +955,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _classCallCheck(this, BaseUIState);
 
 	        this.id = _utils2.default.Other.createGuid();
-	        _uiStore2.default.addState(this);
+	        _statesStore2.default.addState(this);
 	    }
 
 	    _createClass(BaseUIState, [{
@@ -987,7 +987,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'removeState',
 	        value: function removeState() {
-	            _uiStore2.default.removeState(this.id);
+	            _statesStore2.default.removeState(this.id);
 	        }
 	    }, {
 	        key: '_updateComponent',
