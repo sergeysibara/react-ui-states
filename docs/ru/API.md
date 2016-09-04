@@ -1,7 +1,7 @@
 # Справочник API
 
 - [DefaultStore](#defaultstore)
-- [StatesStore](#StatesStore)
+- [StatesStore](#statesstore)
 - [BaseUIState](#baseuistate)
 - [DefaultUIState](#defaultuistate)
 - [DefaultStoreDecorator](#defaultstoredecorator)
