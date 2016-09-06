@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import Stores from './../stores.js'
 import Network from './../network.js'
 import {DefaultUIState} from 'ui-states'
-import InputWrapper from './input-wrapper.js'
+import InputWrapper from './../../../../common/components/input-wrapper.js'
 
 let mainStore = Stores.currentCustomer;
 
@@ -46,7 +46,7 @@ export default class CustomerForm extends Component {
     render() {
         return (
             <div>
-                <form ref="form">
+                <form>
                     <InputWrapper label="Customer name" {...this.mapToInputProps('name')}/>
                     <InputWrapper label="Customer city" {...this.mapToInputProps('city')}/>
                     <InputWrapper label="Customer email" {...this.mapToInputProps('email')}/>

@@ -1,11 +1,12 @@
 {
   "name": "react-ui-states",
   "version": "0.1.0",
-  "description": "Library for creating an architecture with separate components and states in React.js applications",
+  "description": "Library for replace standard state object on custom class in React.js applications",
   "repository": {
     "type": "git",
     "url": "https://github.com/sergeysibara/react-ui-states.git"
   },
+  "main": "dist/react-ui-states.js",
   "keywords": [
     "ui-state",
     "state",

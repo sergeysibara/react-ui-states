@@ -1108,7 +1108,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        _this._subscribeToStores(storesParams);
-	        _this._setStoreModels();
+	        setTimeout(function () {
+	            _this._setStoreModels();
+	        }, 0);
 	        return _this;
 	    }
 
@@ -1198,7 +1200,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }, {
 	        key: 'updateFromStores',
-	        value: function updateFromStores(storeKeys) {
+	        value: function updateFromStores() {
+	            var storeKeys = arguments.length <= 0 || arguments[0] === undefined ? this._getAllStoreKeys() : arguments[0];
 	            var doUpdate = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
 	            var _iteratorNormalCompletion4 = true;
 	            var _didIteratorError4 = false;
@@ -1404,6 +1407,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function _getParamByStoreKey(storeKey) {
 	            return this._storesParams.find(function (p) {
 	                return p.store.key == storeKey;
+	            });
+	        }
+	    }, {
+	        key: '_getAllStoreKeys',
+	        value: function _getAllStoreKeys() {
+	            return this._storesParams.map(function (p) {
+	                return p.store.key;
 	            });
 	        }
 	    }, {

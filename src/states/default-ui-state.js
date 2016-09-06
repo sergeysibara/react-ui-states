@@ -35,7 +35,9 @@ export default class DefaultUIState extends BaseUIState {
         }
 
         this._subscribeToStores(storesParams);
-        this._setStoreModels();
+        setTimeout(()=> {
+            this._setStoreModels()
+        }, 0);
     }
 
     get updatedStore(){
@@ -77,7 +79,7 @@ export default class DefaultUIState extends BaseUIState {
         this._updateComponent();
     }
 
-    updateFromStores(storeKeys, doUpdate = true) {
+    updateFromStores(storeKeys = this._getAllStoreKeys(), doUpdate = true) {
         for (let key of storeKeys) {
             let validationData = this[key].validationData;
             this._setStoreModel(key);
@@ -184,6 +186,10 @@ export default class DefaultUIState extends BaseUIState {
 
     _getParamByStoreKey(storeKey) {
         return this._storesParams.find(p=>p.store.key == storeKey);
+    }
+
+    _getAllStoreKeys() {
+        return this._storesParams.map(p=>p.store.key);
     }
 
     _updateField(path = null) {

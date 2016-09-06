@@ -10,6 +10,10 @@
   - [Array](#array)
 - [ObjectPath](#objectpath)
   
+### Пример испорта всех классов
+```import {DefaultStore, BaseUIState, DefaultUIState, DefaultStoreDecorator, StatesStore, Utils, objectPath} from 'react-ui-states'```
+
+  
 ## DefaultStore
 Экземпляры этого класса хранят данные приложения. Под каждый вид данных свое хранилище. Другие классы могут подписаться на обновление данных в хранилище, либо самостоятельно считать данные из него.
 
@@ -144,7 +148,7 @@ this.uiState = new DefaultUIState(this, null, [
 * cancelModelChanges(doUpdate = true) - отменяет только изменения в объекте uiState.model.
 * cancelStoresChanges(storeKeys, clearValidation = true, validationOnly = false) - отменяет только изменения в указанных хранилищах. Параметр validationOnly равный true указывает, что нужно удалить только данные валидации.
 * cancelChangesByPath(path, storeKey, doUpdate = true) - отменяет изменения по указанному пути в объекте.
-* updateFromStores(storeKeys, doUpdate = true) - обновить модели данных только из указанных хранилищ.
+* updateFromStores(storeKeys, doUpdate = true) - обновляет модели данных только из указанных хранилищ. При storeKeys равном null будут использоваться все хранилища, указанные при вызове конструктора DefaultUIState.
 
 следующие функции используются для получения параметров _lastUpdateTime, _isNew, _isExist из модели данных, переданной хранилищем.
 * storeLastUpdateTime(storeKey)
