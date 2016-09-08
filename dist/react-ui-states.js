@@ -1424,7 +1424,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var path = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
 	            this._updatedFieldPath = path;
-	            this._component.forceUpdate(function () {
+	            this._component.setState({}, function () {
 	                _this2._updatedFieldPath = null;
 	            });
 	        }
@@ -1436,7 +1436,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var storeKey = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
 	            this._updatedStore = storeKey;
-	            this._component.forceUpdate(function () {
+	            this._component.setState({}, function () {
 	                _this3._updatedStore = null;
 	            });
 	        }

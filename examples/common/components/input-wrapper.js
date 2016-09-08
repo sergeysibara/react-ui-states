@@ -4,7 +4,9 @@ import {Utils} from 'ui-states';
 export default class InputWrapper extends Component {
     static propTypes = {
         parentUiState: PropTypes.object.isRequired,
-        pathToField: PropTypes.string.isRequired
+        pathToField: PropTypes.string.isRequired,
+        pathToValidationField: PropTypes.string,
+        doParentUpdate: PropTypes.bool,
     };
 
     getFullPath(path, field) {
@@ -30,7 +32,7 @@ export default class InputWrapper extends Component {
 
     handleOnChange = (e) => {
         let newValue = (this.props.type == 'checkbox')? e.target.checked: e.target.value;
-        this.props.parentUiState.set(this.getFullPath(this.props.pathToField, this.props.name), newValue, false);
+        this.props.parentUiState.set(this.getFullPath(this.props.pathToField, this.props.name), newValue, false, this.props.doParentUpdate || true);
 
         if (Utils.Other.isExist(this.props.onChange)) {
             this.props.onChange(e);
@@ -39,7 +41,7 @@ export default class InputWrapper extends Component {
     };
 
     render() {
-        const {parentUiState, pathToField, pathToValidationField, containerClass, ...inputProps} = this.props;
+        const {parentUiState, pathToField, pathToValidationField, doParentUpdate, containerClass, ...inputProps} = this.props;
 
         let errorClass = '';
         if (this.getValidationData().length > 0) {

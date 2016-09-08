@@ -194,7 +194,7 @@ export default class DefaultUIState extends BaseUIState {
 
     _updateField(path = null) {
         this._updatedFieldPath = path;
-        this._component.forceUpdate(()=> {
+        this._component.setState({}, ()=> {
                 this._updatedFieldPath = null;
             }
         );
@@ -202,7 +202,7 @@ export default class DefaultUIState extends BaseUIState {
 
     _updateComponent(storeKey = null) {
         this._updatedStore = storeKey;
-        this._component.forceUpdate(()=> {
+        this._component.setState({}, ()=> {
                 this._updatedStore = null;
             }
         );

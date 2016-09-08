@@ -32,14 +32,14 @@ export default class CustomerForm extends Component {
         Network.saveCustomerCity(this.uiState.currentCustomer);
     }
 
-
     mapToInputProps(field) {
         return {
             type: "text",
             name: field,
             parentUiState: this.uiState,
             pathToField: 'currentCustomer', //full path == this.uiState.currentCustomer
-            pathToValidationField: 'currentCustomer.validationData'  //full path == this.uiState.currentCustomer.validationData
+            pathToValidationField: 'currentCustomer.validationData',  //full path == this.uiState.currentCustomer.validationData
+            doParentUpdate: false
         };
     }
 
