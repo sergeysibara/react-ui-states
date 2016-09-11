@@ -139,16 +139,16 @@ this.uiState = new DefaultUIState(this, null, [
 #### Описание общих параметров методов
 * storeKey – ключ хранилища.
 * storeKeys – массив с ключами хранилищ.
-* doUpdate – выполнить обновление компонента в конце работы функции или нет.
+* canUpdate – выполнить обновление компонента в конце работы функции или нет.
 * clearValidation – указывает, удалять ли данные валидации или нет.
 
 * updatedStore - имя хранилища, вызвавшего обновление компонента. Имеет значение только во время выполнения перерисовки компонента, вызванной uiState.
 * updatedFieldPath - путь к полю, вызвавшего обновление компонента. Имеет значение только во время выполнения перерисовки компонента, вызванной uiState.
 * cancelAllChanges(clearValidation = true) - отменяет все изменения в uiState. Все данные, полученные их хранилищ, считываются из хранилищ еще раз. Прочие данные(объект uiState.model) сбрасываются к состоянию, которое было при вызове конструктора DefaultUIState.
-* cancelModelChanges(doUpdate = true) - отменяет только изменения в объекте uiState.model.
+* cancelModelChanges(canUpdate = true) - отменяет только изменения в объекте uiState.model.
 * cancelStoresChanges(storeKeys, clearValidation = true, validationOnly = false) - отменяет только изменения в указанных хранилищах. Параметр validationOnly равный true указывает, что нужно удалить только данные валидации.
-* cancelChangesByPath(path, storeKey, doUpdate = true) - отменяет изменения по указанному пути в объекте.
-* updateFromStores(storeKeys, doUpdate = true) - обновляет модели данных только из указанных хранилищ. При storeKeys равном null будут использоваться все хранилища, указанные при вызове конструктора DefaultUIState.
+* cancelChangesByPath(path, storeKey, canUpdate = true) - отменяет изменения по указанному пути в объекте.
+* updateFromStores(storeKeys, canUpdate = true) - обновляет модели данных только из указанных хранилищ. При storeKeys равном null будут использоваться все хранилища, указанные при вызове конструктора DefaultUIState.
 
 следующие функции используются для получения параметров _lastUpdateTime, _isNew, _isExist из модели данных, переданной хранилищем.
 * storeLastUpdateTime(storeKey)

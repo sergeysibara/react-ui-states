@@ -1154,10 +1154,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'cancelModelChanges',
 	        value: function cancelModelChanges() {
-	            var doUpdate = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+	            var canUpdate = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
 
 	            this.model = _utils2.default.Other.deepClone(this._initialModel);
-	            if (doUpdate) {
+	            if (canUpdate) {
 	                this._updateComponent();
 	            }
 	        }
@@ -1202,7 +1202,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'updateFromStores',
 	        value: function updateFromStores() {
 	            var storeKeys = arguments.length <= 0 || arguments[0] === undefined ? this._getAllStoreKeys() : arguments[0];
-	            var doUpdate = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+	            var canUpdate = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
 	            var _iteratorNormalCompletion4 = true;
 	            var _didIteratorError4 = false;
 	            var _iteratorError4 = undefined;
@@ -1230,14 +1230,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 	            }
 
-	            if (doUpdate === true) {
+	            if (canUpdate === true) {
 	                this._updateComponent();
 	            }
 	        }
 	    }, {
 	        key: 'cancelChangesByPath',
 	        value: function cancelChangesByPath(path, storeKey) {
-	            var doUpdate = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+	            var canUpdate = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
 
 	            var fullPath = storeKey + '.' + path;
 	            if (_objectPath2.default.has(this, fullPath)) {
@@ -1249,7 +1249,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                console.log('path ' + fullPath + ' not found');
 	            }
 
-	            if (doUpdate === true) {
+	            if (canUpdate === true) {
 	                this._updateComponent();
 	            }
 	        }
@@ -1377,7 +1377,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	            this._setStoreModel(storeKey, validationData);
 
-	            if (_utils2.default.Other.isExist(options) && options.doUpdateUIState === false) {
+	            if (_utils2.default.Other.isExist(options) && options.canUpdateUIState === false) {
 	                return;
 	            }
 	            this._updateComponent(storeKey);

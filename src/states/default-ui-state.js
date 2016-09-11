@@ -60,9 +60,9 @@ export default class DefaultUIState extends BaseUIState {
         this._updateComponent();
     }
 
-    cancelModelChanges(doUpdate = true) {
+    cancelModelChanges(canUpdate = true) {
         this.model = Utils.Other.deepClone(this._initialModel);
-        if (doUpdate) {
+        if (canUpdate) {
             this._updateComponent();
         }
     }
@@ -79,18 +79,18 @@ export default class DefaultUIState extends BaseUIState {
         this._updateComponent();
     }
 
-    updateFromStores(storeKeys = this._getAllStoreKeys(), doUpdate = true) {
+    updateFromStores(storeKeys = this._getAllStoreKeys(), canUpdate = true) {
         for (let key of storeKeys) {
             let validationData = this[key].validationData;
             this._setStoreModel(key);
             this[key].validationData = validationData;
         }
-        if (doUpdate === true) {
+        if (canUpdate === true) {
             this._updateComponent();
         }
     }
 
-    cancelChangesByPath(path, storeKey, doUpdate = true) {
+    cancelChangesByPath(path, storeKey, canUpdate = true) {
         let fullPath = storeKey + '.' + path;
         if (objectPath.has(this, fullPath)) {
             let storeParams = this._getParamByStoreKey(storeKey);
@@ -102,7 +102,7 @@ export default class DefaultUIState extends BaseUIState {
             console.log(`path ${fullPath} not found`);
         }
 
-        if (doUpdate === true) {
+        if (canUpdate === true) {
             this._updateComponent();
         }
     }
@@ -158,7 +158,7 @@ export default class DefaultUIState extends BaseUIState {
         }
         this._setStoreModel(storeKey, validationData);
 
-        if (Utils.Other.isExist(options) && options.doUpdateUIState === false) {
+        if (Utils.Other.isExist(options) && options.canUpdateUIState === false) {
             return;
         }
         this._updateComponent(storeKey);
