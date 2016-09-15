@@ -1,6 +1,6 @@
 {
   "name": "react-ui-states",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Library for demonstration approach with replace standard state object on instance of custom class in React.js applications",
   "repository": {
     "type": "git",

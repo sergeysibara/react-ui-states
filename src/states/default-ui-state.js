@@ -36,7 +36,8 @@ export default class DefaultUIState extends BaseUIState {
 
         this._subscribeToStores(storesParams);
         setTimeout(()=> {
-            this._setStoreModels()
+            this._setStoreModels();
+            this._updateComponent();
         }, 0);
     }
 

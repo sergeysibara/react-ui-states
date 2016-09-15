@@ -1110,6 +1110,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _this._subscribeToStores(storesParams);
 	        setTimeout(function () {
 	            _this._setStoreModels();
+	            _this._updateComponent();
 	        }, 0);
 	        return _this;
 	    }
