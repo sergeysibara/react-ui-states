@@ -74,16 +74,6 @@ var appActions = Reflux.createActions([
 ```
 
 React UI States version:  
-**In most cases, a component does not need to know what action was due.**
-
-If a component still need to know.  
-**variant 1 (saving last action in store):**
 ```javascript
-newStoreData.lastAction = 'addItem';
-appStore.update(newStoreData);
-```
-**variant 2 (pass action through 'options' parametr):**  
-Preferable. Implemented in DefaultStore; not implemented in DefaultUIState.
-```javascript
-appStore.update(newStoreData, null, {lastAction: 'addItem'});
+//Actions are not necessary.
 ```
